@@ -1,0 +1,21 @@
+{
+  "name": "flaghouse-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FlagHouse API — Node.js, Express, MongoDB",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch-path=./src --watch-path=./.env src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/scripts/seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.2"
+  }
+}
