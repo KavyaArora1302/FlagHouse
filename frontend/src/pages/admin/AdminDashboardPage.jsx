@@ -51,7 +51,7 @@ const AdminDashboardPage = () => {
           className="bg-white border border-gray-100 rounded-2xl p-6 hover:border-gray-200 transition-colors"
         >
           <h3 className="font-bold text-gray-900 mb-1">Products</h3>
-          <p className="text-sm text-gray-500">Add and edit catalog — coming next</p>
+          <p className="text-sm text-gray-500">Add, edit, and delete catalog items</p>
         </Link>
         <Link
           to="/admin/orders"

@@ -54,6 +54,10 @@ npm start
 | POST | `/api/orders` | Place order (auth required) |
 | GET | `/api/orders` | List your orders (auth required) |
 | GET | `/api/admin/status` | Admin check (admin role + Bearer token) |
+| GET | `/api/admin/products` | List all products (admin) |
+| POST | `/api/admin/products` | Create product (admin) |
+| PATCH | `/api/admin/products/:id` | Update product by `legacyId` (admin) |
+| DELETE | `/api/admin/products/:id` | Delete product (admin) |
 
 ## Admin setup
 
