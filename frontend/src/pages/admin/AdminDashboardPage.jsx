@@ -58,7 +58,7 @@ const AdminDashboardPage = () => {
           className="bg-white border border-gray-100 rounded-2xl p-6 hover:border-gray-200 transition-colors"
         >
           <h3 className="font-bold text-gray-900 mb-1">Orders</h3>
-          <p className="text-sm text-gray-500">View and update order status — coming next</p>
+          <p className="text-sm text-gray-500">View all orders and update fulfillment status</p>
         </Link>
       </div>
     </div>

@@ -8,6 +8,11 @@ import {
   updateAdminProduct,
   deleteAdminProduct,
 } from '../controllers/admin.product.controller.js';
+import {
+  listAdminOrders,
+  getAdminOrderById,
+  updateAdminOrder,
+} from '../controllers/admin.order.controller.js';
 
 const router = Router();
 
@@ -19,5 +24,9 @@ router.get('/products', listAdminProducts);
 router.post('/products', createAdminProduct);
 router.patch('/products/:id', updateAdminProduct);
 router.delete('/products/:id', deleteAdminProduct);
+
+router.get('/orders', listAdminOrders);
+router.get('/orders/:id', getAdminOrderById);
+router.patch('/orders/:id', updateAdminOrder);
 
 export default router;

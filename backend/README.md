@@ -58,6 +58,9 @@ npm start
 | POST | `/api/admin/products` | Create product (admin) |
 | PATCH | `/api/admin/products/:id` | Update product by `legacyId` (admin) |
 | DELETE | `/api/admin/products/:id` | Delete product (admin) |
+| GET | `/api/admin/orders` | List all orders (admin) |
+| GET | `/api/admin/orders/:id` | One order (admin) |
+| PATCH | `/api/admin/orders/:id` | Update order / payment status (admin) |
 
 ## Admin setup
 
