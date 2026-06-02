@@ -61,6 +61,12 @@ npm start
 | GET | `/api/admin/orders` | List all orders (admin) |
 | GET | `/api/admin/orders/:id` | One order (admin) |
 | PATCH | `/api/admin/orders/:id` | Update order / payment status (admin) |
+| POST | `/api/payments/razorpay/create` | Start Razorpay payment (auth) |
+| POST | `/api/payments/razorpay/verify` | Verify Razorpay payment (auth) |
+
+## Razorpay (test mode)
+
+Set `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `.env`. Online checkout (UPI/card/netbanking) uses Razorpay; COD uses `POST /api/orders`.
 
 ## Admin setup
 
@@ -101,3 +107,5 @@ Expected health response when MongoDB is connected:
 | `JWT_SECRET` | (required)                         | Sign auth tokens   |
 | `JWT_EXPIRES_IN` | `7d`                           | Token lifetime     |
 | `ADMIN_EMAIL` | —                                  | Emails granted admin role |
+| `RAZORPAY_KEY_ID` | —                              | Razorpay test/live key id |
+| `RAZORPAY_KEY_SECRET` | —                          | Razorpay secret |

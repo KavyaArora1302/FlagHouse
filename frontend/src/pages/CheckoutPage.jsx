@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../api/orders';
+import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payments';
+import { openRazorpayCheckout } from '../utils/razorpayCheckout';
 
 const SHIPPING_THRESHOLD = 999;
 const SHIPPING_CHARGE    = 99;
@@ -83,7 +85,6 @@ const CheckoutPage = () => {
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '',
     address: '', city: '', state: '', pincode: '',
-    upiId: '', cardNumber: '', cardName: '', cardExpiry: '', cardCvv: '',
   });
 
   const shipping = cartSubtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_CHARGE;
@@ -111,6 +112,32 @@ const CheckoutPage = () => {
     }));
   }, [user]);
 
+  const buildOrderPayload = () => ({
+    items: cartItems.map((item) => ({
+      productId: item.id,
+      name: item.name,
+      category: item.category,
+      size: item.size,
+      quantity: item.quantity,
+      price: item.price,
+    })),
+    shippingAddress: {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone,
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      pincode: form.pincode,
+    },
+    paymentMethod,
+    subtotal,
+    shipping,
+    codCharge,
+    total,
+  });
+
   const handlePlaceOrder = async () => {
     if (!token) return;
 
@@ -118,37 +145,45 @@ const CheckoutPage = () => {
     setPlaceError('');
 
     try {
-      const data = await createOrder(token, {
-        items: cartItems.map((item) => ({
-          productId: item.id,
-          name: item.name,
-          category: item.category,
-          size: item.size,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        shippingAddress: {
-          firstName: form.firstName,
-          lastName: form.lastName,
+      const payload = buildOrderPayload();
+
+      if (paymentMethod === 'cod') {
+        const data = await createOrder(token, payload);
+        setPlacedOrder(data.order);
+        clearCart();
+        setOrderPlaced(true);
+        return;
+      }
+
+      const { order, razorpay } = await createRazorpayOrder(token, payload);
+
+      const verified = await openRazorpayCheckout({
+        keyId: razorpay.keyId,
+        amount: razorpay.amount,
+        currency: razorpay.currency,
+        orderId: razorpay.orderId,
+        orderNumber: order.orderNumber,
+        customer: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
           email: form.email,
           phone: form.phone,
-          address: form.address,
-          city: form.city,
-          state: form.state,
-          pincode: form.pincode,
         },
-        paymentMethod,
-        subtotal,
-        shipping,
-        codCharge,
-        total,
+        onDismiss: () => setPlacingOrder(false),
+        onSuccess: (response) =>
+          verifyRazorpayPayment(token, {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          }),
       });
 
-      setPlacedOrder(data.order);
+      setPlacedOrder(verified.order);
       clearCart();
       setOrderPlaced(true);
     } catch (err) {
-      setPlaceError(err.message || 'Failed to place order. Please try again.');
+      if (err.message !== 'Payment cancelled') {
+        setPlaceError(err.message || 'Failed to place order. Please try again.');
+      }
     } finally {
       setPlacingOrder(false);
     }
@@ -267,29 +302,11 @@ const CheckoutPage = () => {
                 ))}
               </div>
 
-              {/* UPI */}
-              {paymentMethod === 'upi' && (
-                <div className="flex flex-col gap-4">
-                  <Input label="UPI ID" id="upiId" placeholder="yourname@upi" value={form.upiId} onChange={set('upiId')} required />
-                </div>
-              )}
-
-              {/* Card */}
-              {paymentMethod === 'card' && (
-                <div className="flex flex-col gap-4">
-                  <Input label="Cardholder Name" id="cardName"   placeholder="Name on card"   value={form.cardName}   onChange={set('cardName')}   required />
-                  <Input label="Card Number"      id="cardNumber" placeholder="1234 5678 9012 3456" value={form.cardNumber} onChange={set('cardNumber')} required />
-                  <div className="flex gap-4">
-                    <Input label="Expiry (MM/YY)" id="cardExpiry" placeholder="MM/YY" value={form.cardExpiry} onChange={set('cardExpiry')} required half />
-                    <Input label="CVV"             id="cardCvv"   placeholder="123"   value={form.cardCvv}    onChange={set('cardCvv')}    required half />
-                  </div>
-                </div>
-              )}
-
-              {/* Net Banking */}
-              {paymentMethod === 'netbanking' && (
-                <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-500">
-                  You will be redirected to your bank's website to complete the payment.
+              {/* Online payment — Razorpay checkout on Place Order */}
+              {paymentMethod !== 'cod' && (
+                <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 text-sm text-gray-600 leading-relaxed">
+                  You will complete payment securely via <strong className="text-gray-900">Razorpay</strong> after
+                  you review your order. In test mode, use Razorpay&apos;s test UPI, card, or netbanking options.
                 </div>
               )}
 
@@ -395,7 +412,9 @@ const CheckoutPage = () => {
                       Placing order...
                     </>
                   ) : (
-                    `Place Order ₹${total.toLocaleString()}`
+                    paymentMethod === 'cod'
+                      ? `Place Order ₹${total.toLocaleString()}`
+                      : `Pay ₹${total.toLocaleString()}`
                   )}
                 </button>
               </div>

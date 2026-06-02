@@ -1,92 +1,33 @@
 import { Order } from '../models/Order.js';
 import { formatOrder, generateOrderNumber } from '../utils/formatOrder.js';
-
-const PAYMENT_METHODS = ['upi', 'card', 'netbanking', 'cod'];
-
-const validateShippingAddress = (address) => {
-  const required = [
-    'firstName',
-    'lastName',
-    'email',
-    'phone',
-    'address',
-    'city',
-    'state',
-    'pincode',
-  ];
-
-  for (const field of required) {
-    if (!address?.[field]?.trim()) {
-      return `Missing required field: ${field}`;
-    }
-  }
-
-  return null;
-};
+import { normalizeOrderPayload } from '../utils/orderValidation.js';
 
 export const createOrder = async (req, res) => {
   try {
-    const {
-      items,
-      shippingAddress,
-      paymentMethod,
-      subtotal,
-      shipping,
-      codCharge = 0,
-      total,
-    } = req.body;
+    const { error, data } = normalizeOrderPayload(req.body);
 
-    if (!items?.length) {
-      return res.status(400).json({ message: 'Cart is empty' });
+    if (error) {
+      return res.status(400).json({ message: error });
     }
 
-    if (!PAYMENT_METHODS.includes(paymentMethod)) {
-      return res.status(400).json({ message: 'Invalid payment method' });
+    if (data.paymentMethod !== 'cod') {
+      return res.status(400).json({
+        message: 'Online payments must use Razorpay checkout',
+      });
     }
-
-    const addressError = validateShippingAddress(shippingAddress);
-    if (addressError) {
-      return res.status(400).json({ message: addressError });
-    }
-
-    if (
-      typeof subtotal !== 'number' ||
-      typeof shipping !== 'number' ||
-      typeof total !== 'number'
-    ) {
-      return res.status(400).json({ message: 'Invalid order totals' });
-    }
-
-    const normalizedItems = items.map((item) => ({
-      productId: item.productId ?? item.id,
-      name: item.name,
-      category: item.category,
-      size: item.size,
-      quantity: item.quantity,
-      price: item.price,
-    }));
 
     const order = await Order.create({
       user: req.user._id,
       orderNumber: generateOrderNumber(),
-      items: normalizedItems,
-      shippingAddress: {
-        firstName: shippingAddress.firstName.trim(),
-        lastName: shippingAddress.lastName.trim(),
-        email: shippingAddress.email.trim().toLowerCase(),
-        phone: shippingAddress.phone.trim(),
-        address: shippingAddress.address.trim(),
-        city: shippingAddress.city.trim(),
-        state: shippingAddress.state.trim(),
-        pincode: shippingAddress.pincode.trim(),
-      },
-      paymentMethod,
-      subtotal,
-      shipping,
-      codCharge: codCharge || 0,
-      total,
+      items: data.items,
+      shippingAddress: data.shippingAddress,
+      paymentMethod: data.paymentMethod,
+      subtotal: data.subtotal,
+      shipping: data.shipping,
+      codCharge: data.codCharge,
+      total: data.total,
       status: 'confirmed',
-      paymentStatus: paymentMethod === 'cod' ? 'pending' : 'paid',
+      paymentStatus: 'pending',
     });
 
     res.status(201).json({

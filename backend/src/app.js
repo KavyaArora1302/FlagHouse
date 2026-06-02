@@ -5,6 +5,7 @@ import productRoutes from './routes/product.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.get('/', (_req, res) => {
     auth: '/api/auth',
     orders: '/api/orders',
     admin: '/api/admin',
+    payments: '/api/payments',
   });
 });
 
@@ -65,6 +67,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: 'Route not found' });
