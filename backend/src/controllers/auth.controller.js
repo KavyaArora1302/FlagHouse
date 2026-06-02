@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
 import { formatUser } from '../utils/formatUser.js';
 import { signToken } from '../utils/token.js';
+import { roleForEmail } from '../utils/adminEmail.js';
 
 const sendAuthResponse = (res, user, statusCode = 200) => {
   const token = signToken(user._id);
@@ -36,6 +37,7 @@ export const register = async (req, res) => {
       name: name.trim(),
       email: normalizedEmail,
       password: hashedPassword,
+      role: roleForEmail(normalizedEmail),
     });
 
     sendAuthResponse(res, user, 201);

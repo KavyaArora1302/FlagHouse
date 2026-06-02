@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
         loginSession,
         logout,
         isLoggedIn: !!user && !!token,
+        isAdmin: user?.role === 'admin',
         authLoading,
       }}
     >

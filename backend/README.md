@@ -53,6 +53,19 @@ npm start
 | GET | `/api/auth/me` | Current user (header: `Authorization: Bearer <token>`) |
 | POST | `/api/orders` | Place order (auth required) |
 | GET | `/api/orders` | List your orders (auth required) |
+| GET | `/api/admin/status` | Admin check (admin role + Bearer token) |
+
+## Admin setup
+
+1. Set `ADMIN_EMAIL` in `.env` (comma-separated for multiple admins).
+2. Promote an existing account:
+
+```bash
+npm run promote-admin
+# or: npm run promote-admin -- you@example.com
+```
+
+New registrations with an `ADMIN_EMAIL` address get `role: "admin"` automatically.
 
 ## Verify
 
@@ -80,3 +93,4 @@ Expected health response when MongoDB is connected:
 | `CLIENT_URL` | `http://localhost:5174`            | Frontend (CORS)    |
 | `JWT_SECRET` | (required)                         | Sign auth tokens   |
 | `JWT_EXPIRES_IN` | `7d`                           | Token lifetime     |
+| `ADMIN_EMAIL` | —                                  | Emails granted admin role |

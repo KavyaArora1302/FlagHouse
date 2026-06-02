@@ -4,6 +4,7 @@ import healthRoutes from './routes/health.routes.js';
 import productRoutes from './routes/product.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import orderRoutes from './routes/order.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.get('/', (_req, res) => {
     products: '/api/products',
     auth: '/api/auth',
     orders: '/api/orders',
+    admin: '/api/admin',
   });
 });
 
@@ -62,6 +64,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: 'Route not found' });

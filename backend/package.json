@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "node --watch-path=./src --watch-path=./.env src/index.js",
     "start": "node src/index.js",
-    "seed": "node src/scripts/seed.js"
+    "seed": "node src/scripts/seed.js",
+    "promote-admin": "node src/scripts/promoteAdmin.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
