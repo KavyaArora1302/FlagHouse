@@ -65,6 +65,11 @@ npm start
 | PATCH | `/api/admin/orders/:id` | Update order / payment status (admin) |
 | POST | `/api/payments/razorpay/create` | Start Razorpay payment (auth) |
 | POST | `/api/payments/razorpay/verify` | Verify Razorpay payment (auth) |
+| POST | `/api/contact` | Submit contact form (`name`, `email`, `message`, optional `subject`) |
+
+## Contact form
+
+Submissions are emailed to `CONTACT_EMAIL`, or the first `ADMIN_EMAIL` if unset. Requires `RESEND_API_KEY`.
 
 ## Razorpay (test mode)
 
@@ -109,6 +114,7 @@ Expected health response when MongoDB is connected:
 | `JWT_SECRET` | (required)                         | Sign auth tokens   |
 | `JWT_EXPIRES_IN` | `7d`                           | Token lifetime     |
 | `ADMIN_EMAIL` | —                                  | Emails granted admin role |
+| `CONTACT_EMAIL` | —                                | Inbox for contact form (defaults to first `ADMIN_EMAIL`) |
 | `RAZORPAY_KEY_ID` | —                              | Razorpay test/live key id |
 | `RAZORPAY_KEY_SECRET` | —                          | Razorpay secret |
 | `RESEND_API_KEY` | —                                 | Resend API key for password reset emails |

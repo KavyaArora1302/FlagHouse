@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ContactHero from '../components/ContactHero';
+import { submitContactForm } from '../api/contact';
 
 const contactInfo = [
   {
@@ -58,12 +59,24 @@ const ContactPage = () => {
   const [form, setForm]       = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState('');
 
   const set = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setLoading(true);
+
+    try {
+      await submitContactForm(form);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || 'Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -108,7 +121,11 @@ const ContactPage = () => {
                     Thanks for reaching out. We'll get back to you at <span className="font-medium text-gray-700">{form.email}</span> within 24 hours.
                   </p>
                   <button
-                    onClick={() => { setSubmitted(false); setForm({ name: '', email: '', subject: '', message: '' }); }}
+                    onClick={() => {
+                      setSubmitted(false);
+                      setError('');
+                      setForm({ name: '', email: '', subject: '', message: '' });
+                    }}
                     className="text-sm font-medium text-gray-500 underline hover:text-gray-900 transition-colors mt-2"
                   >
                     Send another message
@@ -116,6 +133,11 @@ const ContactPage = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  {error && (
+                    <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg px-4 py-3">
+                      {error}
+                    </div>
+                  )}
                   <div className="flex gap-4">
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -172,9 +194,20 @@ const ContactPage = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-black text-white font-semibold text-base py-3.5 rounded-xl hover:bg-neutral-800 transition-colors"
+                    disabled={loading}
+                    className="w-full bg-black text-white font-semibold text-base py-3.5 rounded-xl hover:bg-neutral-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Send Message
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      'Send Message'
+                    )}
                   </button>
                 </form>
               )}

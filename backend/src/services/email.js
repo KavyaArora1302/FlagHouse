@@ -245,3 +245,65 @@ export const sendOrderConfirmationEmail = async (order) => {
   console.log(`[email] Order confirmation sent for ${order.orderNumber} → ${to}`);
   return { sent: true, mode: 'email' };
 };
+
+const escapeHtml = (value) =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+const buildContactFormHtml = ({ name, email, subject, message }) => `
+  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; color: #111827;">
+    <div style="padding: 24px 0 16px; border-bottom: 1px solid #f3f4f6;">
+      <strong style="font-size: 20px;">FlagHouse — New contact message</strong>
+    </div>
+    <div style="padding: 28px 0; font-size: 15px; line-height: 1.6; color: #374151;">
+      <p style="margin: 0 0 16px;"><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;</p>
+      <p style="margin: 0 0 16px;"><strong>Subject:</strong> ${escapeHtml(subject)}</p>
+      <div style="background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 12px; padding: 16px; white-space: pre-wrap;">${escapeHtml(message)}</div>
+      <p style="margin: 16px 0 0; font-size: 13px; color: #9ca3af;">Reply directly to this email to respond to the customer.</p>
+    </div>
+  </div>
+`;
+
+const buildContactFormText = ({ name, email, subject, message }) =>
+  [
+    'New contact message — FlagHouse',
+    '',
+    `From: ${name} <${email}>`,
+    `Subject: ${subject}`,
+    '',
+    message,
+    '',
+    'Reply to the customer at their email address above.',
+  ].join('\n');
+
+/**
+ * Sends contact form submission to the FlagHouse inbox via Resend.
+ */
+export const sendContactFormEmail = async ({ to, fromCustomer }) => {
+  const { name, email, subject, message } = fromCustomer;
+  const resend = getResend();
+
+  if (!resend) {
+    console.log('[email] Contact form (console mode):', { to, fromCustomer });
+    return { sent: false, mode: 'console' };
+  }
+
+  const { error } = await resend.emails.send({
+    from: getEmailFrom(),
+    to,
+    replyTo: email,
+    subject: `[FlagHouse Contact] ${subject}`,
+    html: buildContactFormHtml({ name, email, subject, message }),
+    text: buildContactFormText({ name, email, subject, message }),
+  });
+
+  if (error) {
+    throw new Error(error.message || 'Failed to send contact email');
+  }
+
+  console.log(`[email] Contact form sent from ${email} → ${to}`);
+  return { sent: true, mode: 'email' };
+};

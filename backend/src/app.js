@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
+import contactRoutes from './routes/contact.routes.js';
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.get('/', (_req, res) => {
     orders: '/api/orders',
     admin: '/api/admin',
     payments: '/api/payments',
+    contact: '/api/contact',
   });
 });
 
@@ -68,6 +70,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: 'Route not found' });

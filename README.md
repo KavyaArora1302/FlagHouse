@@ -97,6 +97,7 @@ npm run dev     # http://localhost:5174
 | GET | `/api/auth/me` | Bearer | Current user |
 | POST | `/api/orders` | Bearer | Place order |
 | GET | `/api/orders` | Bearer | Order history |
+| POST | `/api/contact` | — | Submit contact form message |
 
 ## Deployment
 
