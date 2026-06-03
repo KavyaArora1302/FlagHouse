@@ -65,6 +65,7 @@ npm start
 | PATCH | `/api/admin/orders/:id` | Update order / payment status (admin) |
 | POST | `/api/payments/razorpay/create` | Start Razorpay payment (auth) |
 | POST | `/api/payments/razorpay/verify` | Verify Razorpay payment (auth) |
+| POST | `/api/payments/razorpay/webhook` | Razorpay server webhook (signature verified) |
 | POST | `/api/contact` | Submit contact form (`name`, `email`, `message`, optional `subject`) |
 
 ## Contact form
@@ -74,6 +75,18 @@ Submissions are emailed to `CONTACT_EMAIL`, or the first `ADMIN_EMAIL` if unset.
 ## Razorpay (test mode)
 
 Set `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `.env`. Online checkout (UPI/card/netbanking) uses Razorpay; COD uses `POST /api/orders`.
+
+### Webhooks (recommended for production)
+
+Server-side backup when the browser never calls `/razorpay/verify` (tab closed, network drop).
+
+1. In [Razorpay Dashboard](https://dashboard.razorpay.com/) → **Webhooks** → **Add New Webhook**
+2. **Webhook URL:** `https://flaghouse-api.onrender.com/api/payments/razorpay/webhook`
+3. **Secret:** generate and copy → set as `RAZORPAY_WEBHOOK_SECRET` on Render
+4. **Active events:** `payment.captured`, `payment.failed`
+5. Redeploy backend after adding the env var
+
+The client `/razorpay/verify` flow still works; webhooks confirm payment even if the user closes the checkout modal early.
 
 ## Admin setup
 
@@ -117,6 +130,7 @@ Expected health response when MongoDB is connected:
 | `CONTACT_EMAIL` | —                                | Inbox for contact form (defaults to first `ADMIN_EMAIL`) |
 | `RAZORPAY_KEY_ID` | —                              | Razorpay test/live key id |
 | `RAZORPAY_KEY_SECRET` | —                          | Razorpay secret |
+| `RAZORPAY_WEBHOOK_SECRET` | —                      | Webhook signing secret from Razorpay dashboard |
 | `RESEND_API_KEY` | —                                 | Resend API key for password reset emails |
 | `EMAIL_FROM` | `FlagHouse <onboarding@resend.dev>`     | Sender address (must be verified in Resend) |
 

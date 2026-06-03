@@ -7,6 +7,7 @@ import orderRoutes from './routes/order.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import contactRoutes from './routes/contact.routes.js';
+import { razorpayWebhook } from './controllers/payment.controller.js';
 
 const app = express();
 
@@ -49,6 +50,14 @@ app.use(
     credentials: true,
   })
 );
+
+// Razorpay webhook — raw body required for signature verification
+app.post(
+  '/api/payments/razorpay/webhook',
+  express.raw({ type: 'application/json' }),
+  razorpayWebhook
+);
+
 app.use(express.json());
 
 app.get('/', (_req, res) => {
