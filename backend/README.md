@@ -127,3 +127,5 @@ Expected health response when MongoDB is connected:
 5. Ensure `CLIENT_URL` includes your live frontend URL so reset links point to the correct site.
 
 Without `RESEND_API_KEY`, forgot-password still works locally — the reset link is printed in the server console.
+
+Order confirmation emails are sent automatically after COD checkout and after successful Razorpay payment verification.

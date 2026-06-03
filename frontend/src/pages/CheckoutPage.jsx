@@ -205,6 +205,15 @@ const CheckoutPage = () => {
           <p className="text-base text-gray-500 max-w-sm mx-auto">
             Thank you for shopping with FlagHouse. Your order has been confirmed and will be delivered in 3–5 business days.
           </p>
+          {(placedOrder.shippingAddress?.email || form.email) && (
+            <p className="text-sm text-gray-400 max-w-sm mx-auto mt-3">
+              A confirmation email was sent to{' '}
+              <span className="font-medium text-gray-600">
+                {placedOrder.shippingAddress?.email || form.email}
+              </span>
+              .
+            </p>
+          )}
         </div>
         <div className="bg-gray-50 border border-gray-100 rounded-2xl px-8 py-5 text-sm text-gray-600 flex flex-col gap-2">
           <p><span className="font-semibold text-gray-900">Order ID:</span> {placedOrder.orderNumber}</p>

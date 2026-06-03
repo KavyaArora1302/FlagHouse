@@ -114,7 +114,7 @@ See `backend/README.md` and `backend/ATLAS_SETUP.md` for more detail.
 - [x] Admin panel (products & orders)
 - [x] Real product images
 - [x] Password reset
-- [ ] Order confirmation emails
+- [x] Order confirmation emails
 
 ## License
 

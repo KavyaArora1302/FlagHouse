@@ -3,6 +3,7 @@ import { Order } from '../models/Order.js';
 import { formatOrder, generateOrderNumber } from '../utils/formatOrder.js';
 import { normalizeOrderPayload } from '../utils/orderValidation.js';
 import { getRazorpay, getRazorpayKeyId, isRazorpayConfigured } from '../services/razorpay.js';
+import { notifyOrderConfirmation } from '../utils/orderEmail.js';
 
 export const createRazorpayOrder = async (req, res) => {
   try {
@@ -113,6 +114,8 @@ export const verifyRazorpayPayment = async (req, res) => {
     order.paymentStatus = 'paid';
     order.razorpayPaymentId = razorpayPaymentId;
     await order.save();
+
+    await notifyOrderConfirmation(order);
 
     res.json({
       message: 'Payment successful',

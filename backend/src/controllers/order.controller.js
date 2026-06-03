@@ -1,6 +1,7 @@
 import { Order } from '../models/Order.js';
 import { formatOrder, generateOrderNumber } from '../utils/formatOrder.js';
 import { normalizeOrderPayload } from '../utils/orderValidation.js';
+import { notifyOrderConfirmation } from '../utils/orderEmail.js';
 
 export const createOrder = async (req, res) => {
   try {
@@ -29,6 +30,8 @@ export const createOrder = async (req, res) => {
       status: 'confirmed',
       paymentStatus: 'pending',
     });
+
+    await notifyOrderConfirmation(order);
 
     res.status(201).json({
       message: 'Order placed successfully',
