@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { resolveProductImage } from '../utils/productImage';
 
 const CartContext = createContext(null);
 
@@ -38,6 +39,7 @@ export const CartProvider = ({ children }) => {
           category:      product.category,
           price:         product.price,
           originalPrice: product.originalPrice || null,
+          image:         resolveProductImage(product),
           size,
           quantity,
         },

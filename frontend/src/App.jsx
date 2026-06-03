@@ -11,6 +11,8 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
 import OrdersPage from './pages/OrdersPage';
 import AdminRoute from './components/AdminRoute';
@@ -71,8 +73,10 @@ const App = () => {
               <Route path="/orders"      element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
               <Route path="/about"       element={<AboutPage />} />
               <Route path="/contact"     element={<ContactPage />} />
-              <Route path="/login"       element={<LoginPage />} />
-              <Route path="/register"    element={<RegisterPage />} />
+              <Route path="/login"            element={<LoginPage />} />
+              <Route path="/register"         element={<RegisterPage />} />
+              <Route path="/forgot-password"  element={<ForgotPasswordPage />} />
+              <Route path="/reset-password"   element={<ResetPasswordPage />} />
               <Route path="*"            element={<NotFoundPage />} />
                   </Routes>
                 </Layout>

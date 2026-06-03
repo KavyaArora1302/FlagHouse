@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { fetchMyOrders } from '../api/orders';
 import ProductLoadState, { ProductErrorState } from '../components/ProductLoadState';
+import ProductImage from '../components/ProductImage';
 
 const paymentLabels = {
   upi: 'UPI',
@@ -96,9 +97,12 @@ const OrderCard = ({ order }) => {
                     key={`${item.productId}-${item.size}-${index}`}
                     className="flex items-center gap-4 bg-white rounded-xl p-3 border border-gray-100"
                   >
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
-                      <span className="text-xl">🚩</span>
-                    </div>
+                    <ProductImage
+                      productId={item.productId}
+                      alt={item.name}
+                      className="w-12 h-12 rounded-lg shrink-0"
+                      fallbackClassName="text-xl"
+                    />
                     <div className="flex-1 min-w-0">
                       <Link
                         to={`/product/${item.productId}`}

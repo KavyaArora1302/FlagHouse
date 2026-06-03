@@ -5,6 +5,7 @@ import ScrollVideoSection from '../components/ScrollVideoSection';
 import { homeCategoryCards } from '../data/products';
 import { fetchProducts } from '../api/products';
 import ProductLoadState, { ProductErrorState } from '../components/ProductLoadState';
+import ProductImage from '../components/ProductImage';
 
 const features = [
   {
@@ -136,19 +137,22 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-200 group">
-      <Link to={`/product/${product.id}`}>
-        <div className="relative bg-gray-100 h-56 flex items-center justify-center">
-          <span className="text-5xl">🚩</span>
-          {product.tag && (
-            <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${
-              product.tag === 'Sale' ? 'bg-gray-100 text-gray-900' :
-              product.tag === 'New' ? 'bg-black text-white' :
-              'bg-gray-100 text-gray-900'
-            }`}>
-              {product.tag}
-            </span>
-          )}
-        </div>
+      <Link to={`/product/${product.id}`} className="block relative">
+        <ProductImage
+          product={product}
+          alt={product.name}
+          className="h-56"
+          fallbackClassName="text-5xl"
+        />
+        {product.tag && (
+          <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full z-10 ${
+            product.tag === 'Sale' ? 'bg-gray-100 text-gray-900' :
+            product.tag === 'New' ? 'bg-black text-white' :
+            'bg-gray-100 text-gray-900'
+          }`}>
+            {product.tag}
+          </span>
+        )}
       </Link>
       <div className="p-5">
         <h3 className="text-base font-semibold text-gray-900 mb-1">{product.name}</h3>

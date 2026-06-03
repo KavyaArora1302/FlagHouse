@@ -50,6 +50,8 @@ npm start
 | GET | `/api/products/:id` | One product by `legacyId` + related items |
 | POST | `/api/auth/register` | Create account (`name`, `email`, `password`) |
 | POST | `/api/auth/login` | Sign in → `{ user, token }` |
+| POST | `/api/auth/forgot-password` | Request reset link (`email`) — sends email via Resend |
+| POST | `/api/auth/reset-password` | Set new password (`token`, `password`) |
 | GET | `/api/auth/me` | Current user (header: `Authorization: Bearer <token>`) |
 | POST | `/api/orders` | Place order (auth required) |
 | GET | `/api/orders` | List your orders (auth required) |
@@ -109,3 +111,19 @@ Expected health response when MongoDB is connected:
 | `ADMIN_EMAIL` | —                                  | Emails granted admin role |
 | `RAZORPAY_KEY_ID` | —                              | Razorpay test/live key id |
 | `RAZORPAY_KEY_SECRET` | —                          | Razorpay secret |
+| `RESEND_API_KEY` | —                                 | Resend API key for password reset emails |
+| `EMAIL_FROM` | `FlagHouse <onboarding@resend.dev>`     | Sender address (must be verified in Resend) |
+
+## Password reset emails (Resend)
+
+1. Sign up at [resend.com](https://resend.com) and create an API key.
+2. Add to `.env`:
+   ```env
+   RESEND_API_KEY=re_xxxxxxxx
+   EMAIL_FROM=FlagHouse <onboarding@resend.dev>
+   ```
+3. **Testing:** Resend’s `onboarding@resend.dev` can only send to **your own Resend account email** until you verify a domain.
+4. **Production:** Verify your domain in Resend and set `EMAIL_FROM` to e.g. `FlagHouse <hello@yourdomain.com>`.
+5. Ensure `CLIENT_URL` includes your live frontend URL so reset links point to the correct site.
+
+Without `RESEND_API_KEY`, forgot-password still works locally — the reset link is printed in the server console.

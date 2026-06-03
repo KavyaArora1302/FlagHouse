@@ -85,7 +85,7 @@ const LoginPage = () => {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-sm font-medium text-gray-700">Password</label>
-                <Link to="#" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">
+                <Link to="/forgot-password" className="text-xs text-gray-400 hover:text-gray-700 transition-colors">
                   Forgot password?
                 </Link>
               </div>

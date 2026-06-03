@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { SHOP_FILTER_CATEGORIES } from '../data/products';
 import { fetchProducts } from '../api/products';
 import ProductLoadState, { ProductErrorState } from '../components/ProductLoadState';
+import ProductImage from '../components/ProductImage';
 
 const priceRanges = [
   { label: 'All Prices', min: 0,   max: Infinity },
@@ -32,19 +33,22 @@ const ProductCard = ({ product }) => {
 
   return (
   <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-200 group">
-    <Link to={`/product/${product.id}`}>
-      <div className="relative bg-gray-100 h-52 flex items-center justify-center">
-        <span className="text-5xl">🚩</span>
-        {product.tag && (
-          <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${
-            product.tag === 'Sale'       ? 'bg-gray-100 text-gray-900' :
-            product.tag === 'New'        ? 'bg-black text-white' :
-                                           'bg-gray-100 text-gray-900'
-          }`}>
-            {product.tag}
-          </span>
-        )}
-      </div>
+    <Link to={`/product/${product.id}`} className="block relative">
+      <ProductImage
+        product={product}
+        alt={product.name}
+        className="h-52"
+        fallbackClassName="text-5xl"
+      />
+      {product.tag && (
+        <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full z-10 ${
+          product.tag === 'Sale'       ? 'bg-gray-100 text-gray-900' :
+          product.tag === 'New'        ? 'bg-black text-white' :
+                                         'bg-gray-100 text-gray-900'
+        }`}>
+          {product.tag}
+        </span>
+      )}
     </Link>
     <div className="p-4">
       <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">{product.category}</span>

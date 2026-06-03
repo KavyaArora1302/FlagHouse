@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import ProductImage from '../components/ProductImage';
 
 const SHIPPING_THRESHOLD = 999;
 const SHIPPING_CHARGE    = 99;
@@ -9,9 +10,12 @@ const SHIPPING_CHARGE    = 99;
 const CartItem = ({ item, onQuantityChange, onRemove }) => (
   <div className="flex gap-5 py-6 border-b border-gray-100 last:border-0">
     <Link to={`/product/${item.id}`} className="shrink-0">
-      <div className="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center hover:opacity-80 transition-opacity">
-        <span className="text-3xl">🚩</span>
-      </div>
+      <ProductImage
+        product={item}
+        alt={item.name}
+        className="w-24 h-24 rounded-xl"
+        fallbackClassName="text-3xl"
+      />
     </Link>
 
     <div className="flex-1 min-w-0">

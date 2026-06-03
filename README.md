@@ -45,7 +45,7 @@ cd backend
 npm install
 cp .env.example .env
 # Edit .env: MONGODB_URI, JWT_SECRET, CLIENT_URL
-npm run seed    # once, to load products
+npm run seed    # once, to load products (includes image URLs)
 npm run dev     # http://localhost:5000
 ```
 
@@ -74,6 +74,8 @@ npm run dev     # http://localhost:5174
 | `JWT_SECRET` | Secret for signing tokens |
 | `CLIENT_URL` | Frontend origin(s), comma-separated (CORS) |
 | `PORT` | Optional; default `5000` locally |
+| `RESEND_API_KEY` | Resend API key for password reset emails |
+| `EMAIL_FROM` | Sender for reset emails (verified in Resend) |
 
 ### Frontend (`frontend/.env`)
 
@@ -90,6 +92,8 @@ npm run dev     # http://localhost:5174
 | GET | `/api/products/:id` | — | Product + related |
 | POST | `/api/auth/register` | — | Create account |
 | POST | `/api/auth/login` | — | Login |
+| POST | `/api/auth/forgot-password` | — | Request password reset link |
+| POST | `/api/auth/reset-password` | — | Set new password with reset token |
 | GET | `/api/auth/me` | Bearer | Current user |
 | POST | `/api/orders` | Bearer | Place order |
 | GET | `/api/orders` | Bearer | Order history |
@@ -106,11 +110,11 @@ See `backend/README.md` and `backend/ATLAS_SETUP.md` for more detail.
 
 - [x] Storefront, cart, checkout, auth, orders
 - [x] Deploy (Vercel + Render + Atlas)
-- [ ] Razorpay payments
-- [ ] Admin panel (products & orders)
-- [ ] Password reset
+- [x] Razorpay payments
+- [x] Admin panel (products & orders)
+- [x] Real product images
+- [x] Password reset
 - [ ] Order confirmation emails
-- [ ] Real product images
 
 ## License
 

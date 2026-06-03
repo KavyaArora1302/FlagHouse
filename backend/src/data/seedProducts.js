@@ -1,8 +1,10 @@
 /** Catalog seed data — mirrors frontend/src/data/products.js */
 
+import { withCatalogImages } from './productImages.js';
+
 export const FEATURED_LEGACY_IDS = [1, 5, 9, 13];
 
-export const seedProducts = [
+const rawSeedProducts = [
   {
     legacyId: 1,
     name: 'India Cricket Flag',
@@ -197,3 +199,5 @@ export const seedProducts = [
   ...product,
   featured: FEATURED_LEGACY_IDS.includes(product.legacyId),
 }));
+
+export const seedProducts = withCatalogImages(rawSeedProducts);

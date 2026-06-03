@@ -7,6 +7,7 @@ import {
   updateAdminProduct,
   deleteAdminProduct,
 } from '../../api/adminProducts';
+import ProductImage from '../../components/ProductImage';
 
 const emptyForm = {
   name: '',
@@ -267,9 +268,17 @@ const AdminProductsPage = () => {
               <input
                 value={form.image}
                 onChange={setField('image')}
-                placeholder="https://..."
+                placeholder="/products/1.jpg or https://..."
                 className="mt-1 w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
               />
+              {(form.image || editingId) && (
+                <ProductImage
+                  product={{ id: editingId, image: form.image || undefined }}
+                  alt="Preview"
+                  className="mt-3 w-24 h-24 rounded-xl border border-gray-100"
+                  fallbackClassName="text-2xl"
+                />
+              )}
             </label>
 
             <label className="block sm:col-span-2">
@@ -329,6 +338,7 @@ const AdminProductsPage = () => {
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-50 text-gray-500 uppercase text-xs tracking-wider">
                 <tr>
+                  <th className="px-4 py-3">Image</th>
                   <th className="px-4 py-3">ID</th>
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Category</th>
@@ -340,6 +350,14 @@ const AdminProductsPage = () => {
               <tbody className="divide-y divide-gray-50">
                 {products.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50/50">
+                    <td className="px-4 py-3">
+                      <ProductImage
+                        product={product}
+                        alt={product.name}
+                        className="w-12 h-12 rounded-lg"
+                        fallbackClassName="text-lg"
+                      />
+                    </td>
                     <td className="px-4 py-3 font-mono text-gray-500">{product.id}</td>
                     <td className="px-4 py-3 font-medium text-gray-900">{product.name}</td>
                     <td className="px-4 py-3 text-gray-600">{product.category}</td>

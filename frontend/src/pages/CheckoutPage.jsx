@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../api/orders';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payments';
 import { openRazorpayCheckout } from '../utils/razorpayCheckout';
+import ProductImage from '../components/ProductImage';
 
 const SHIPPING_THRESHOLD = 999;
 const SHIPPING_CHARGE    = 99;
@@ -120,6 +121,7 @@ const CheckoutPage = () => {
       size: item.size,
       quantity: item.quantity,
       price: item.price,
+      image: item.image,
     })),
     shippingAddress: {
       firstName: form.firstName,
@@ -369,9 +371,12 @@ const CheckoutPage = () => {
                 <div className="flex flex-col gap-3">
                   {cartItems.map((item) => (
                     <div key={`${item.id}-${item.size}`} className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
-                        <span className="text-xl">🚩</span>
-                      </div>
+                      <ProductImage
+                        product={item}
+                        alt={item.name}
+                        className="w-12 h-12 rounded-lg shrink-0"
+                        fallbackClassName="text-xl"
+                      />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900">{item.name}</p>
                         <p className="text-xs text-gray-400">{item.size} · Qty: {item.quantity}</p>

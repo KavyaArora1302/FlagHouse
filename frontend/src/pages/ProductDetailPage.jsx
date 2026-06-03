@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { PRODUCT_SIZES } from '../data/products';
 import { fetchProductById } from '../api/products';
 import ProductLoadState, { ProductErrorState } from '../components/ProductLoadState';
+import ProductImage from '../components/ProductImage';
 
 // ─── Star Rating ──────────────────────────────────────────────────────────────
 
@@ -30,9 +31,12 @@ const StarRating = ({ rating }) => {
 
 const RelatedCard = ({ product }) => (
   <Link to={`/product/${product.id}`} className="group">
-    <div className="bg-gray-100 rounded-xl h-40 flex items-center justify-center mb-3 group-hover:shadow-md transition-shadow">
-      <span className="text-4xl">🚩</span>
-    </div>
+    <ProductImage
+      product={product}
+      alt={product.name}
+      className="rounded-xl h-40 mb-3 group-hover:shadow-md transition-shadow"
+      fallbackClassName="text-4xl"
+    />
     <p className="text-xs text-gray-400 uppercase tracking-wide">{product.category}</p>
     <h4 className="text-sm font-semibold text-gray-900 mt-0.5 mb-1">{product.name}</h4>
     <p className="text-sm font-bold text-gray-900">₹{product.price}</p>
@@ -53,7 +57,6 @@ const ProductDetailPage = () => {
   const [error, setError] = useState(null);
   const [selectedSize, setSelectedSize] = useState(PRODUCT_SIZES[1]);
   const [quantity, setQuantity] = useState(1);
-  const [activeThumb, setActiveThumb] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
 
   const loadProduct = () => {
@@ -134,10 +137,15 @@ const ProductDetailPage = () => {
 
         {/* ── Left: Images ── */}
         <div className="lg:w-1/2 flex flex-col gap-4">
-          <div className="bg-gray-100 rounded-2xl h-96 flex items-center justify-center relative">
-            <span className="text-8xl">🚩</span>
+          <div className="relative rounded-2xl overflow-hidden">
+            <ProductImage
+              product={product}
+              alt={product.name}
+              className="h-96"
+              fallbackClassName="text-8xl"
+            />
             {product.tag && (
-              <span className={`absolute top-4 left-4 text-xs font-semibold px-3 py-1.5 rounded-full ${
+              <span className={`absolute top-4 left-4 text-xs font-semibold px-3 py-1.5 rounded-full z-10 ${
                 product.tag === 'Sale'       ? 'bg-gray-100 text-gray-900' :
                 product.tag === 'New'        ? 'bg-black text-white' :
                                                'bg-gray-100 text-gray-900'
@@ -145,19 +153,6 @@ const ProductDetailPage = () => {
                 {product.tag}
               </span>
             )}
-          </div>
-          <div className="flex gap-3">
-            {[0, 1, 2, 3].map((i) => (
-              <button
-                key={i}
-                onClick={() => setActiveThumb(i)}
-                className={`flex-1 bg-gray-100 rounded-xl h-20 flex items-center justify-center border-2 transition-colors ${
-                  activeThumb === i ? 'border-black' : 'border-transparent hover:border-gray-300'
-                }`}
-              >
-                <span className="text-2xl">🚩</span>
-              </button>
-            ))}
           </div>
         </div>
 
