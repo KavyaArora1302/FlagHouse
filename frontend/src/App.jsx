@@ -15,6 +15,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
 import OrdersPage from './pages/OrdersPage';
+import ProfilePage from './pages/ProfilePage';
 import AdminRoute from './components/AdminRoute';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
@@ -71,6 +72,7 @@ const App = () => {
               <Route path="/cart"        element={<CartPage />} />
               <Route path="/checkout"    element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
               <Route path="/orders"      element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+              <Route path="/profile"     element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/about"       element={<AboutPage />} />
               <Route path="/contact"     element={<ContactPage />} />
               <Route path="/login"            element={<LoginPage />} />

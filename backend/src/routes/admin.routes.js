@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware.js';
 import { requireAdmin } from '../middleware/requireAdmin.middleware.js';
 import { getAdminStatus } from '../controllers/admin.controller.js';
+import { getAdminStats } from '../controllers/admin.stats.controller.js';
 import {
   listAdminProducts,
   createAdminProduct,
@@ -19,6 +20,7 @@ const router = Router();
 router.use(protect, requireAdmin);
 
 router.get('/status', getAdminStatus);
+router.get('/stats', getAdminStats);
 
 router.get('/products', listAdminProducts);
 router.post('/products', createAdminProduct);

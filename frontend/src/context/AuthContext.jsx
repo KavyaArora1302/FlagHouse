@@ -33,6 +33,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem(TOKEN_KEY, authToken);
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    if (!token) return null;
+    const data = await fetchMe(token);
+    setUser(data.user);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    return data.user;
+  }, [token]);
+
   useEffect(() => {
     if (!token) {
       setAuthLoading(false);
@@ -58,6 +66,7 @@ export const AuthProvider = ({ children }) => {
         user,
         token,
         loginSession,
+        refreshUser,
         logout,
         isLoggedIn: !!user && !!token,
         isAdmin: user?.role === 'admin',

@@ -18,3 +18,12 @@ export async function fetchAdminStatus(token) {
   });
   return parseJsonResponse(res);
 }
+
+export async function fetchAdminStats(token) {
+  const res = await fetch(`${API_URL}/api/admin/stats`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return parseJsonResponse(res);
+}

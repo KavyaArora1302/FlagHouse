@@ -95,6 +95,12 @@ npm run dev     # http://localhost:5174
 | POST | `/api/auth/forgot-password` | — | Request password reset link |
 | POST | `/api/auth/reset-password` | — | Set new password with reset token |
 | GET | `/api/auth/me` | Bearer | Current user |
+| PATCH | `/api/auth/profile` | Bearer | Update display name |
+| GET | `/api/auth/checkout-prefill` | Bearer | Checkout address pre-fill |
+| POST | `/api/auth/addresses` | Bearer | Add saved address |
+| PATCH | `/api/auth/addresses/:id` | Bearer | Update saved address |
+| DELETE | `/api/auth/addresses/:id` | Bearer | Delete saved address |
+| PATCH | `/api/auth/addresses/:id/default` | Bearer | Set default saved address |
 | POST | `/api/orders` | Bearer | Place order |
 | GET | `/api/orders` | Bearer | Order history |
 | POST | `/api/contact` | — | Submit contact form message |
@@ -116,6 +122,8 @@ See `backend/README.md` and `backend/ATLAS_SETUP.md` for more detail.
 - [x] Real product images
 - [x] Password reset
 - [x] Order confirmation emails
+- [x] User profile & saved addresses (checkout pre-fill)
+- [x] Admin dashboard stats
 
 ## License
 

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../api/orders';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payments';
+import { fetchCheckoutPrefill } from '../api/profile';
 import { openRazorpayCheckout } from '../utils/razorpayCheckout';
 import ProductImage from '../components/ProductImage';
 
@@ -82,6 +83,10 @@ const CheckoutPage = () => {
   const [placedOrder, setPlacedOrder]     = useState(null);
   const [placingOrder, setPlacingOrder]   = useState(false);
   const [placeError, setPlaceError]       = useState('');
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [prefillNote, setPrefillNote] = useState('');
+  const prefillDone = useRef(false);
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '',
@@ -103,15 +108,48 @@ const CheckoutPage = () => {
     }
   }, [cartItems.length, orderPlaced, navigate]);
 
-  // Pre-fill email from logged-in user
+  const applyShippingAddress = (shipping, addressId = '') => {
+    if (!shipping) return;
+    setForm({
+      firstName: shipping.firstName || '',
+      lastName: shipping.lastName || '',
+      email: shipping.email || user?.email || '',
+      phone: shipping.phone || '',
+      address: shipping.address || '',
+      city: shipping.city || '',
+      state: shipping.state || '',
+      pincode: shipping.pincode || '',
+    });
+    setSelectedAddressId(addressId);
+  };
+
   useEffect(() => {
-    if (!user?.email) return;
-    setForm((prev) => ({
-      ...prev,
-      email: prev.email || user.email,
-      firstName: prev.firstName || user.name?.split(' ')[0] || '',
-    }));
-  }, [user]);
+    if (!token || prefillDone.current) return;
+    prefillDone.current = true;
+
+    fetchCheckoutPrefill(token)
+      .then((data) => {
+        setSavedAddresses(data.savedAddresses || []);
+        applyShippingAddress(data.shippingAddress, data.addressId || '');
+
+        if (data.source === 'saved') {
+          setPrefillNote('Filled from your default saved address');
+        } else if (data.source === 'lastOrder') {
+          setPrefillNote('Filled from your last order — edit if needed');
+        } else {
+          setPrefillNote('');
+        }
+      })
+      .catch(() => {
+        if (user?.email) {
+          setForm((prev) => ({
+            ...prev,
+            email: prev.email || user.email,
+            firstName: prev.firstName || user.name?.split(' ')[0] || '',
+          }));
+        }
+      });
+  }, [token]);
 
   const buildOrderPayload = () => ({
     items: cartItems.map((item) => ({
@@ -262,6 +300,57 @@ const CheckoutPage = () => {
           {step === 0 && (
             <div className="bg-white border border-gray-100 rounded-2xl p-7">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Delivery Details</h2>
+
+              {savedAddresses.length > 0 && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Saved address
+                  </label>
+                  <select
+                    value={selectedAddressId}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      if (!id) {
+                        setSelectedAddressId('');
+                        setPrefillNote('');
+                        return;
+                      }
+                      const addr = savedAddresses.find((a) => a.id === id);
+                      if (addr) {
+                        applyShippingAddress(
+                          {
+                            ...addr,
+                            email: user?.email || form.email,
+                          },
+                          id
+                        );
+                        setPrefillNote('Using saved address');
+                      }
+                    }}
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-gray-400"
+                  >
+                    <option value="">Enter a new address</option>
+                    {savedAddresses.map((addr) => (
+                      <option key={addr.id} value={addr.id}>
+                        {addr.label} — {addr.city}, {addr.state}
+                        {addr.isDefault ? ' (default)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-400 mt-2">
+                    <Link to="/profile" className="text-gray-600 underline hover:no-underline">
+                      Manage addresses in profile
+                    </Link>
+                  </p>
+                </div>
+              )}
+
+              {prefillNote && (
+                <p className="text-xs text-gray-500 bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 mb-5">
+                  {prefillNote}
+                </p>
+              )}
+
               <div className="flex flex-col gap-5">
                 <div className="flex gap-4">
                   <Input label="First Name" id="firstName" placeholder="Kavya" value={form.firstName} onChange={set('firstName')} required half />

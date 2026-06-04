@@ -53,9 +53,16 @@ npm start
 | POST | `/api/auth/forgot-password` | Request reset link (`email`) — sends email via Resend |
 | POST | `/api/auth/reset-password` | Set new password (`token`, `password`) |
 | GET | `/api/auth/me` | Current user (header: `Authorization: Bearer <token>`) |
+| PATCH | `/api/auth/profile` | Update name (Bearer) |
+| GET | `/api/auth/checkout-prefill` | Suggested checkout address (Bearer) |
+| POST | `/api/auth/addresses` | Add saved address (Bearer) |
+| PATCH | `/api/auth/addresses/:id` | Update saved address (Bearer) |
+| DELETE | `/api/auth/addresses/:id` | Delete saved address (Bearer) |
+| PATCH | `/api/auth/addresses/:id/default` | Set default address (Bearer) |
 | POST | `/api/orders` | Place order (auth required) |
 | GET | `/api/orders` | List your orders (auth required) |
 | GET | `/api/admin/status` | Admin check (admin role + Bearer token) |
+| GET | `/api/admin/stats` | Dashboard stats — orders, revenue, recent (admin) |
 | GET | `/api/admin/products` | List all products (admin) |
 | POST | `/api/admin/products` | Create product (admin) |
 | PATCH | `/api/admin/products/:id` | Update product by `legacyId` (admin) |

@@ -122,6 +122,13 @@ const Navbar = () => {
                       <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                     </div>
                     <Link
+                      to="/profile"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      My Profile
+                    </Link>
+                    <Link
                       to="/orders"
                       onClick={() => setUserMenuOpen(false)}
                       className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -229,6 +236,13 @@ const Navbar = () => {
             <div className="border-t border-gray-100 mt-1 pt-1">
               {isLoggedIn ? (
                 <>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="block text-base py-3 px-4 rounded-xl font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  >
+                    My Profile
+                  </Link>
                   <Link
                     to="/orders"
                     onClick={() => setMenuOpen(false)}
