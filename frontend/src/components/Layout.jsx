@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import FooterTimeStrip from './FooterTimeStrip';
+import Chatbot from './Chatbot';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -43,6 +44,9 @@ const Layout = ({ children }) => {
 
       {/* Fixed footer — revealed as the page scrolls up */}
       <Footer ref={footerRef} />
+
+      {/* AI Chatbot - Fixed floating widget */}
+      <Chatbot />
     </>
   );
 };
